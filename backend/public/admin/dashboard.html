@@ -127,6 +127,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 // ─── Auth setup ──────────────────────────────────────────────────────────────
@@ -248,7 +249,8 @@ async function saveSingle(name) {
 }
 
 async function deleteSingle(name) {
-  if (!confirm(`Delete all ${name} data? This cannot be undone.`)) return;
+  const result = await Swal.fire({ title: 'Delete?', text: `Delete all ${name} data? This cannot be undone.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete' });
+  if (!result.isConfirmed) return;
   try {
     await api.delete(`/admin/${name}`);
     toast(name + ' deleted.');
@@ -361,7 +363,8 @@ async function saveTestimonialsSection() {
 }
 
 async function deleteTestimonialsSection() {
-  if (!confirm('Delete testimonials section heading? This cannot be undone.')) return;
+  const result = await Swal.fire({ title: 'Delete?', text: 'Delete testimonials section heading? This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete' });
+  if (!result.isConfirmed) return;
   try {
     await api.delete('/admin/testimonials-section');
     document.getElementById('tst_section_title').value = '';
@@ -373,7 +376,8 @@ async function deleteTestimonialsSection() {
 }
 
 async function deleteTeamSection() {
-  if (!confirm('Delete team section heading? This cannot be undone.')) return;
+  const result = await Swal.fire({ title: 'Delete?', text: 'Delete team section heading? This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete' });
+  if (!result.isConfirmed) return;
   try {
     await api.delete('/admin/team-section');
     document.getElementById('team_section_title').value = '';
@@ -592,7 +596,8 @@ async function modalSave() {
 }
 
 async function deleteItem(name, id) {
-  if (!confirm('Delete this item? This cannot be undone.')) return;
+  const result = await Swal.fire({ title: 'Delete?', text: 'Delete this item? This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete' });
+  if (!result.isConfirmed) return;
   try {
     await api.delete(`/admin/${name}/${id}`);
     toast('Deleted.');
@@ -703,7 +708,8 @@ async function openContactDetail(id) {
 }
 
 async function deleteContact(id, fromModal = false) {
-  if (!confirm('Delete this submission? This cannot be undone.')) return;
+  const result = await Swal.fire({ title: 'Delete?', text: 'Delete this submission? This cannot be undone.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#6c757d', confirmButtonText: 'Yes, delete' });
+  if (!result.isConfirmed) return;
   try {
     await api.delete(`/admin/contact/${id}`);
     toast('Submission deleted.');

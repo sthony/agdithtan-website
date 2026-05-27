@@ -47,6 +47,7 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 defineProps({
   aboutImageUrl: String,
@@ -61,10 +62,24 @@ async function submitContact() {
   status.value  = null
   try {
     await axios.post('/api/contact', form.value)
-    status.value = { type: 'success', message: "Your message has been sent! We'll be in touch soon." }
     form.value = { first_name: '', last_name: '', email: '', message: '' }
+    Swal.fire({
+      icon: 'success',
+      title: 'Message Sent!',
+      text: "Your message has been sent! We'll be in touch soon.",
+      confirmButtonColor: '#2563eb',
+      timer: 3000,
+      timerProgressBar: true,
+    })
   } catch (err) {
-    status.value = { type: 'error', message: err.response?.data?.error || 'Something went wrong. Please try again.' }
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops!',
+      text: err.response?.data?.error || 'Something went wrong. Please try again.',
+      confirmButtonColor: '#2563eb',
+      timer: 3000,
+      timerProgressBar: true,
+    })
   } finally {
     sending.value = false
   }
