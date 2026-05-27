@@ -1,0 +1,31 @@
+<div id="section-about" class="section">
+  <div class="card card-primary">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="card-title">About Section</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Title <span class="text-danger">*</span></label>
+            <input type="text" id="about_title" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="about_image_url" class="form-control" placeholder="https://...">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="about_description" class="form-control" rows="5"></textarea>
+          </div>
+        </div>
+      </div>
+      <button onclick="saveSingle('about')" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+      <button class="btn btn-danger" onclick="deleteSingle('about')">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

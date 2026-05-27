@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agdith Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper">
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <button onclick="logout()" class="btn btn-danger btn-sm">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <a href="#" class="brand-link">
+        <span class="brand-text font-weight-light"><i class="fas fa-tachometer-alt"></i> AGDITH</span>
+      </a>
+      <div class="sidebar">
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+            <li class="nav-item">
+              <a onclick="showSection('header')" class="nav-link active">
+                <i class="nav-icon fas fa-header"></i>
+                <p>Header</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('hero')" class="nav-link">
+                <i class="nav-icon fas fa-image"></i>
+                <p>Hero Section</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('about')" class="nav-link">
+                <i class="nav-icon fas fa-info-circle"></i>
+                <p>About</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('services')" class="nav-link">
+                <i class="nav-icon fas fa-cogs"></i>
+                <p>Services</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('portfolio')" class="nav-link">
+                <i class="nav-icon fas fa-briefcase"></i>
+                <p>Portfolio</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('team')" class="nav-link">
+                <i class="nav-icon fas fa-users"></i>
+                <p>Team</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('testimonials')" class="nav-link">
+                <i class="nav-icon fas fa-comment"></i>
+                <p>Testimonials</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a onclick="showSection('footer')" class="nav-link">
+                <i class="nav-icon fas fa-footer"></i>
+                <p>Footer</p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+      <div class="content-header">
+        <div class="container-fluid">
+          <h1 class="m-0" id="pageTitle">Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="container-fluid">
+
+          <!-- Header Section -->
+          <div id="header-section" class="section">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Header Information</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Company Name</label>
+                  <input type="text" id="company_name" class="form-control" placeholder="Agdith">
+                </div>
+                <div class="form-group">
+                  <label>Logo URL</label>
+                  <input type="text" id="logo_url" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="text" id="header_phone" class="form-control" placeholder="+62 812...">
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="header_email" class="form-control" placeholder="info@agdith.com">
+                </div>
+                <div class="form-group">
+                  <label>Website</label>
+                  <input type="text" id="website" class="form-control" placeholder="https://agdith.com">
+                </div>
+                <button onclick="saveHeader()" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Section -->
+          <div id="hero-section" class="section" style="display:none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Hero Section</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input type="text" id="hero_title" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Subtitle</label>
+                  <input type="text" id="hero_subtitle" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea id="hero_description" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>CTA Button Text</label>
+                  <input type="text" id="cta_text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>CTA Button Link</label>
+                  <input type="text" id="cta_link" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Background Image URL</label>
+                  <input type="text" id="background_image_url" class="form-control">
+                </div>
+                <button onclick="saveHero()" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- About Section -->
+          <div id="about-section" class="section" style="display:none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">About Section</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input type="text" id="about_title" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea id="about_description" class="form-control" rows="6"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Image URL</label>
+                  <input type="text" id="about_image_url" class="form-control">
+                </div>
+                <button onclick="saveAbout()" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Services Section -->
+          <div id="services-section" class="section" style="display:none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Services</h3>
+              </div>
+              <div class="card-body">
+                <div id="services-list"></div>
+                <hr>
+                <div class="form-group">
+                  <label>Service Title</label>
+                  <input type="text" id="service_title" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea id="service_description" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Icon URL</label>
+                  <input type="text" id="service_icon_url" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Image URL</label>
+                  <input type="text" id="service_image_url" class="form-control">
+                </div>
+                <button onclick="addService()" class="btn btn-success">Add Service</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Section -->
+          <div id="footer-section" class="section" style="display:none;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Footer Information</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Address</label>
+                  <input type="text" id="footer_address" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="text" id="footer_phone" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" id="footer_email" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label>Social Media</label>
+                  <input type="text" id="footer_social_media" class="form-control" placeholder="facebook,instagram,linkedin">
+                </div>
+                <div class="form-group">
+                  <label>Copyright Text</label>
+                  <input type="text" id="footer_copyright_text" class="form-control">
+                </div>
+                <button onclick="saveFooter()" class="btn btn-primary">Save</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
+  <script>
+    const API_URL = '/api';
+    let token = localStorage.getItem('token');
+
+    if (!token) {
+      window.location.href = '/admin/login.html';
+    }
+
+    const api = axios.create({
+      baseURL: API_URL,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    function showSection(section) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
+      // Show selected section
+      document.getElementById(section + '-section').style.display = 'block';
+      document.getElementById('pageTitle').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+      loadSectionData(section);
+    }
+
+    async function loadSectionData(section) {
+      try {
+        if (section === 'header') {
+          const { data } = await api.get('/admin/header');
+          document.getElementById('company_name').value = data.company_name || '';
+          document.getElementById('logo_url').value = data.logo_url || '';
+          document.getElementById('header_phone').value = data.phone || '';
+          document.getElementById('header_email').value = data.email || '';
+          document.getElementById('website').value = data.website || '';
+        }
+        // Add similar loading for other sections
+      } catch (error) {
+        alert('Error loading data: ' + error.message);
+      }
+    }
+
+    async function saveHeader() {
+      try {
+        await api.post('/admin/header', {
+          company_name: document.getElementById('company_name').value,
+          logo_url: document.getElementById('logo_url').value,
+          phone: document.getElementById('header_phone').value,
+          email: document.getElementById('header_email').value,
+          website: document.getElementById('website').value
+        });
+        alert('Header saved successfully!');
+      } catch (error) {
+        alert('Error saving: ' + error.message);
+      }
+    }
+
+    async function saveHero() {
+      try {
+        await api.post('/admin/hero', {
+          title: document.getElementById('hero_title').value,
+          subtitle: document.getElementById('hero_subtitle').value,
+          description: document.getElementById('hero_description').value,
+          cta_text: document.getElementById('cta_text').value,
+          cta_link: document.getElementById('cta_link').value,
+          background_image_url: document.getElementById('background_image_url').value
+        });
+        alert('Hero section saved successfully!');
+      } catch (error) {
+        alert('Error saving: ' + error.message);
+      }
+    }
+
+    async function saveAbout() {
+      try {
+        await api.post('/admin/about', {
+          title: document.getElementById('about_title').value,
+          description: document.getElementById('about_description').value,
+          image_url: document.getElementById('about_image_url').value
+        });
+        alert('About section saved successfully!');
+      } catch (error) {
+        alert('Error saving: ' + error.message);
+      }
+    }
+
+    async function addService() {
+      try {
+        await api.post('/admin/services', {
+          title: document.getElementById('service_title').value,
+          description: document.getElementById('service_description').value,
+          icon_url: document.getElementById('service_icon_url').value,
+          image_url: document.getElementById('service_image_url').value,
+          order_index: 0
+        });
+        alert('Service added successfully!');
+        document.getElementById('service_title').value = '';
+        document.getElementById('service_description').value = '';
+        document.getElementById('service_icon_url').value = '';
+        document.getElementById('service_image_url').value = '';
+      } catch (error) {
+        alert('Error adding service: ' + error.message);
+      }
+    }
+
+    async function saveFooter() {
+      try {
+        await api.post('/admin/footer', {
+          address: document.getElementById('footer_address').value,
+          phone: document.getElementById('footer_phone').value,
+          email: document.getElementById('footer_email').value,
+          social_media: document.getElementById('footer_social_media').value,
+          copyright_text: document.getElementById('footer_copyright_text').value
+        });
+        alert('Footer saved successfully!');
+      } catch (error) {
+        alert('Error saving: ' + error.message);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/admin/login.html';
+    }
+  </script>
+</body>
+</html>

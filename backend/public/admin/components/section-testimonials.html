@@ -1,0 +1,50 @@
+<div id="section-testimonials" class="section">
+  <!-- Section heading -->
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">Section Heading</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Section Title <span class="text-danger">*</span></label>
+            <input type="text" id="tst_section_title" class="form-control" placeholder="What Clients Say">
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>Section Description</label>
+            <input type="text" id="tst_section_desc" class="form-control" placeholder="Trusted by businesses around the world">
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveTestimonialsSection()">
+        <i class="fas fa-save"></i> Save
+      </button>
+      <button class="btn btn-danger ml-2" onclick="deleteTestimonialsSection()">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Testimonials list -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="card-title">Testimonials</h3>
+      <button class="btn btn-success btn-sm" onclick="openAddModal('testimonials')">
+        <i class="fas fa-plus"></i> Add Testimonial
+      </button>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr><th>#</th><th>Name</th><th>Company</th><th>Rating</th><th>Message</th><th style="width:120px">Actions</th></tr>
+        </thead>
+        <tbody id="testimonials-tbody">
+          <tr><td colspan="6"><div class="empty-state"><i class="fas fa-comments"></i>No testimonials yet</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

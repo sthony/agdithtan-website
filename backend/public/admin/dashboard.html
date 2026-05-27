@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agdith Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .section { display: none; }
+    .section.active { display: block; }
+    .nav-link { cursor: pointer; }
+    .table-img { width: 60px; height: 40px; object-fit: cover; border-radius: 4px; }
+    .badge-category { font-size: .75rem; }
+    .toast-container { position: fixed; top: 70px; right: 20px; z-index: 9999; }
+    .empty-state { text-align: center; color: #aaa; padding: 40px 0; }
+    .empty-state i { font-size: 3rem; margin-bottom: 12px; display: block; }
+  </style>
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+
+  <!-- Toast -->
+  <div class="toast-container">
+    <div id="toast" class="alert d-none" role="alert" style="min-width:260px; box-shadow:0 4px 16px rgba(0,0,0,.15)"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item mr-3 d-flex align-items-center">
+        <small class="text-muted" id="welcomeUser"></small>
+      </li>
+      <li class="nav-item">
+        <button onclick="logout()" class="btn btn-danger btn-sm">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="#" class="brand-link text-center">
+      <span class="brand-text font-weight-bold">AGDITH ADMIN</span>
+    </a>
+    <div class="sidebar">
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+          <li class="nav-item"><a onclick="showSection('header',this)" class="nav-link" data-section="header"><i class="nav-icon fas fa-heading"></i><p>Header</p></a></li>
+          <li class="nav-item"><a onclick="showSection('hero',this)" class="nav-link" data-section="hero"><i class="nav-icon fas fa-image"></i><p>Hero Section</p></a></li>
+          <li class="nav-item"><a onclick="showSection('ticker',this)" class="nav-link" data-section="ticker"><i class="nav-icon fas fa-scroll"></i><p>Ticker</p></a></li>
+          <li class="nav-item"><a onclick="showSection('about',this)" class="nav-link" data-section="about"><i class="nav-icon fas fa-info-circle"></i><p>About</p></a></li>
+          <li class="nav-item"><a onclick="showSection('services',this)" class="nav-link" data-section="services"><i class="nav-icon fas fa-cogs"></i><p>Services</p></a></li>
+          <li class="nav-item"><a onclick="showSection('hero-project',this)" class="nav-link" data-section="hero-project"><i class="nav-icon fas fa-star"></i><p>Hero Project</p></a></li>
+          <li class="nav-item"><a onclick="showSection('portfolio',this)" class="nav-link" data-section="portfolio"><i class="nav-icon fas fa-briefcase"></i><p>Portfolio</p></a></li>
+          <li class="nav-item"><a onclick="showSection('team',this)" class="nav-link" data-section="team"><i class="nav-icon fas fa-users"></i><p>Team</p></a></li>
+          <li class="nav-item"><a onclick="showSection('testimonials',this)" class="nav-link" data-section="testimonials"><i class="nav-icon fas fa-comments"></i><p>Testimonials</p></a></li>
+          <li class="nav-item"><a onclick="showSection('banner',this)" class="nav-link" data-section="banner"><i class="nav-icon fas fa-image"></i><p>Banner</p></a></li>
+          <li class="nav-item"><a onclick="showSection('footer',this)" class="nav-link" data-section="footer"><i class="nav-icon fas fa-shoe-prints"></i><p>Footer</p></a></li>
+          <li class="nav-item"><a onclick="showSection('contact',this)" class="nav-link" data-section="contact"><i class="nav-icon fas fa-envelope"></i><p>Contact Inbox</p></a></li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
+        <h1 class="m-0" id="pageTitle">Select a section</h1>
+      </div>
+    </div>
+    <div class="content">
+      <div class="container-fluid">
+        <div id="sections-container"></div>
+      </div><!-- /.container-fluid -->
+    </div><!-- /.content -->
+  </div><!-- /.content-wrapper -->
+
+</div><!-- /.wrapper -->
+
+<!-- ═══════════════ UNIVERSAL MODAL ═══════════════ -->
+<div class="modal fade" id="crudModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalTitle">Add / Edit</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modalSaveBtn" onclick="modalSave()">
+          <i class="fas fa-save"></i> Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact detail modal (view only) -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Contact Submission</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body" id="contactModalBody"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="contactDeleteBtn">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+
+<script>
+// ─── Auth setup ──────────────────────────────────────────────────────────────
+const token = localStorage.getItem('token');
+if (!token) window.location.href = '/admin/login.html';
+
+const api = axios.create({
+  baseURL: '/api',
+  headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+});
+
+// try to show username from JWT payload
+try {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  document.getElementById('welcomeUser').textContent = `Hi, ${payload.username}`;
+} catch(e) {}
+
+// ─── Toast ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.className = `alert alert-${type === 'success' ? 'success' : 'danger'}`;
+  el.textContent = (type === 'success' ? '✓ ' : '✗ ') + msg;
+  el.classList.remove('d-none');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add('d-none'), 3500);
+}
+
+// ─── Section switching ───────────────────────────────────────────────────────
+let currentSection = null;
+const VALID_SECTIONS = ['header','hero','ticker','about','services','hero-project','portfolio','team','testimonials','banner','footer','contact'];
+
+function showSection(name, clickedEl) {
+  if (!VALID_SECTIONS.includes(name)) name = 'header';
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+  const target = clickedEl || document.querySelector(`.nav-link[data-section="${name}"]`);
+  if (target) target.classList.add('active');
+  document.getElementById('pageTitle').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+  currentSection = name;
+  // Update URL hash without triggering a scroll
+  history.replaceState(null, '', '#' + name);
+  loadSection(name);
+}
+
+// ─── Load section data ───────────────────────────────────────────────────────
+async function loadSection(name) {
+  try {
+    if (['header','hero','ticker','about','banner','footer'].includes(name)) {
+      await loadSingle(name);
+    } else if (name === 'hero-project') {
+      await loadHeroProject();
+    } else if (name === 'contact') {
+      await loadContactList();
+    } else {
+      if (name === 'services')  await loadServicesSection();
+      if (name === 'portfolio') await loadPortfolioSection();
+      if (name === 'team')         await loadTeamSection();
+      if (name === 'testimonials') await loadTestimonialsSection();
+      await loadList(name);
+    }
+  } catch(e) {
+    toast('Failed to load data: ' + e.message, 'error');
+  }
+}
+
+// ─── SINGLE-RECORD sections ──────────────────────────────────────────────────
+async function loadSingle(name) {
+  const { data } = await api.get(`/admin/${name}`);
+  const d = data || {};
+  if (name === 'header') {
+    document.getElementById('h_company_name').value = d.company_name || '';
+    document.getElementById('h_logo_url').value     = d.logo_url    || '';
+    document.getElementById('h_phone').value        = d.phone       || '';
+    document.getElementById('h_email').value        = d.email       || '';
+    document.getElementById('h_website').value      = d.website     || '';
+    if (d.id) document.getElementById('header-current').classList.remove('d-none');
+    else       document.getElementById('header-current').classList.add('d-none');
+  } else if (name === 'hero') {
+    document.getElementById('hero_title').value       = d.title                || '';
+    document.getElementById('hero_subtitle').value    = d.subtitle             || '';
+    document.getElementById('hero_description').value = d.description          || '';
+    document.getElementById('hero_cta_text').value    = d.cta_text             || '';
+    document.getElementById('hero_cta_link').value    = d.cta_link             || '';
+    document.getElementById('hero_bg').value          = d.background_image_url || '';
+  } else if (name === 'about') {
+    document.getElementById('about_title').value       = d.title       || '';
+    document.getElementById('about_description').value = d.description || '';
+    document.getElementById('about_image_url').value   = d.image_url   || '';
+  } else if (name === 'ticker') {
+    document.getElementById('ticker_items').value = d.items || '';
+  } else if (name === 'banner') {
+    const url = d.image_url || '';
+    document.getElementById('banner_image_url').value = url;
+    const wrap = document.getElementById('banner-preview-wrap');
+    const img  = document.getElementById('banner-preview-img');
+    if (url) { img.src = url; wrap.style.display = 'block'; }
+    else      { wrap.style.display = 'none'; }
+  } else if (name === 'footer') {
+    document.getElementById('f_address').value        = d.address        || '';
+    document.getElementById('f_phone').value          = d.phone          || '';
+    document.getElementById('f_email').value          = d.email          || '';
+    document.getElementById('f_social_media').value   = d.social_media   || '';
+    document.getElementById('f_copyright_text').value = d.copyright_text || '';
+  }
+}
+
+async function saveSingle(name) {
+  const body = getBody(name);
+  if (!body) return;
+  try {
+    await api.post(`/admin/${name}`, body);
+    toast(name.charAt(0).toUpperCase() + name.slice(1) + ' saved successfully!');
+    loadSection(name);
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function deleteSingle(name) {
+  if (!confirm(`Delete all ${name} data? This cannot be undone.`)) return;
+  try {
+    await api.delete(`/admin/${name}`);
+    toast(name + ' deleted.');
+    loadSection(name);
+  } catch(e) {
+    toast('Delete failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+function getBody(name) {
+  if (name === 'header') {
+    const v = document.getElementById('h_company_name').value.trim();
+    if (!v) { toast('Company name is required', 'error'); return null; }
+    return { company_name: v, logo_url: document.getElementById('h_logo_url').value, phone: document.getElementById('h_phone').value, email: document.getElementById('h_email').value, website: document.getElementById('h_website').value };
+  }
+  if (name === 'hero') {
+    const v = document.getElementById('hero_title').value.trim();
+    if (!v) { toast('Title is required', 'error'); return null; }
+    return { title: v, subtitle: document.getElementById('hero_subtitle').value, description: document.getElementById('hero_description').value, cta_text: document.getElementById('hero_cta_text').value, cta_link: document.getElementById('hero_cta_link').value, background_image_url: document.getElementById('hero_bg').value };
+  }
+  if (name === 'about') {
+    const v = document.getElementById('about_title').value.trim();
+    if (!v) { toast('Title is required', 'error'); return null; }
+    return { title: v, description: document.getElementById('about_description').value, image_url: document.getElementById('about_image_url').value };
+  }
+  if (name === 'ticker') {
+    return { items: document.getElementById('ticker_items').value };
+  }
+  if (name === 'banner') {
+    return { image_url: document.getElementById('banner_image_url').value.trim() };
+  }
+  if (name === 'footer') {
+    return { address: document.getElementById('f_address').value, phone: document.getElementById('f_phone').value, email: document.getElementById('f_email').value, social_media: document.getElementById('f_social_media').value, copyright_text: document.getElementById('f_copyright_text').value };
+  }
+}
+
+// ─── Services section heading ─────────────────────────────────────────────────
+async function loadServicesSection() {
+  try {
+    const { data } = await api.get('/admin/services-section');
+    document.getElementById('svc_section_title').value = data.title || '';
+    document.getElementById('svc_section_desc').value  = data.description || '';
+  } catch(e) { /* ignore if table not seeded yet */ }
+}
+
+async function loadPortfolioSection() {
+  try {
+    const { data } = await api.get('/admin/portfolio-section');
+    document.getElementById('ptf_section_title').value = data.title || '';
+    document.getElementById('ptf_section_desc').value  = data.description || '';
+  } catch(e) {}
+}
+
+async function savePortfolioSection() {
+  const title = document.getElementById('ptf_section_title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    await api.post('/admin/portfolio-section', {
+      title,
+      description: document.getElementById('ptf_section_desc').value
+    });
+    toast('Portfolio section heading saved!');
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function saveServicesSection() {
+  const title = document.getElementById('svc_section_title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    await api.post('/admin/services-section', {
+      title,
+      description: document.getElementById('svc_section_desc').value
+    });
+    toast('Section heading saved!');
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function loadTeamSection() {
+  try {
+    const { data } = await api.get('/admin/team-section');
+    document.getElementById('team_section_title').value = data.title || '';
+    document.getElementById('team_section_desc').value  = data.description || '';
+  } catch(e) {}
+}
+
+async function loadTestimonialsSection() {
+  try {
+    const { data } = await api.get('/admin/testimonials-section');
+    document.getElementById('tst_section_title').value = data.title || '';
+    document.getElementById('tst_section_desc').value  = data.description || '';
+  } catch(e) {}
+}
+
+async function saveTestimonialsSection() {
+  const title = document.getElementById('tst_section_title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    await api.post('/admin/testimonials-section', {
+      title,
+      description: document.getElementById('tst_section_desc').value
+    });
+    toast('Testimonials section heading saved!');
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function deleteTestimonialsSection() {
+  if (!confirm('Delete testimonials section heading? This cannot be undone.')) return;
+  try {
+    await api.delete('/admin/testimonials-section');
+    document.getElementById('tst_section_title').value = '';
+    document.getElementById('tst_section_desc').value  = '';
+    toast('Testimonials section heading deleted.');
+  } catch(e) {
+    toast('Delete failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function deleteTeamSection() {
+  if (!confirm('Delete team section heading? This cannot be undone.')) return;
+  try {
+    await api.delete('/admin/team-section');
+    document.getElementById('team_section_title').value = '';
+    document.getElementById('team_section_desc').value  = '';
+    toast('Team section heading deleted.');
+  } catch(e) {
+    toast('Delete failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function saveTeamSection() {
+  const title = document.getElementById('team_section_title').value.trim();
+  if (!title) { toast('Title is required', 'error'); return; }
+  try {
+    await api.post('/admin/team-section', {
+      title,
+      description: document.getElementById('team_section_desc').value
+    });
+    toast('Team section heading saved!');
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+// ─── LIST sections ───────────────────────────────────────────────────────────
+async function loadList(name) {
+  const { data } = await api.get(`/admin/${name}`);
+  renderTable(name, data);
+}
+
+function renderTable(name, rows) {
+  const tbody = document.getElementById(name + '-tbody');
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state"><i class="fas fa-inbox"></i>No ${name} yet. Click "Add" to create one.</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r, i) => {
+    const actions = `
+      <button class="btn btn-xs btn-warning mr-1" onclick="openEditModal('${name}', ${r.id})"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-xs btn-danger" onclick="deleteItem('${name}', ${r.id})"><i class="fas fa-trash"></i></button>`;
+
+    if (name === 'services') return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${r.title}</strong></td>
+      <td><small>${(r.description||'').substring(0,60)}${r.description?.length>60?'…':''}</small></td>
+      <td>${r.icon_url ? `<img src="${r.icon_url}" class="table-img">` : '<span class="text-muted">—</span>'}</td>
+      <td>${r.order_index}</td>
+      <td>${actions}</td></tr>`;
+
+    if (name === 'portfolio') return `<tr>
+      <td>${i+1}</td>
+      <td>${r.image_url ? `<img src="${r.image_url}" class="table-img">` : '<span class="text-muted">—</span>'}</td>
+      <td><strong>${r.title}</strong><br><small>${(r.description||'').substring(0,50)}${r.description?.length>50?'…':''}</small></td>
+      <td>${r.category ? `<span class="badge badge-info badge-category">${r.category}</span>` : '—'}</td>
+      <td>${r.order_index}</td>
+      <td>${actions}</td></tr>`;
+
+    if (name === 'team') return `<tr>
+      <td>${i+1}</td>
+      <td>${r.image_url ? `<img src="${r.image_url}" class="table-img" style="border-radius:50%">` : '<span class="text-muted">—</span>'}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.position || '—'}</td>
+      <td>${r.email || '—'}</td>
+      <td>${r.order_index}</td>
+      <td>${actions}</td></tr>`;
+
+    if (name === 'testimonials') return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.company || '—'}</td>
+      <td>${'★'.repeat(r.rating||5)}</td>
+      <td><small>${(r.message||'').substring(0,60)}${r.message?.length>60?'…':''}</small></td>
+      <td>${actions}</td></tr>`;
+  }).join('');
+}
+
+// ─── Modal forms ─────────────────────────────────────────────────────────────
+let modalMode = null; // 'add' | 'edit'
+let modalSection = null;
+let modalEditId = null;
+
+const modalForms = {
+  services: (d={}) => `
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Title <span class="text-danger">*</span></label>
+        <input id="m_title" class="form-control" value="${esc(d.title)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Order Index</label>
+        <input id="m_order_index" class="form-control" type="number" value="${d.order_index??0}"></div></div>
+    </div>
+    <div class="form-group"><label>Description</label>
+      <textarea id="m_description" class="form-control" rows="3">${esc(d.description)}</textarea></div>
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Icon URL</label>
+        <input id="m_icon_url" class="form-control" value="${esc(d.icon_url)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Image URL</label>
+        <input id="m_image_url" class="form-control" value="${esc(d.image_url)}"></div></div>
+    </div>`,
+
+  portfolio: (d={}) => `
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Title <span class="text-danger">*</span></label>
+        <input id="m_title" class="form-control" value="${esc(d.title)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Category</label>
+        <input id="m_category" class="form-control" value="${esc(d.category)}"></div></div>
+    </div>
+    <div class="form-group"><label>Description</label>
+      <textarea id="m_description" class="form-control" rows="3">${esc(d.description)}</textarea></div>
+    <div class="row">
+      <div class="col-md-8"><div class="form-group"><label>Image URL</label>
+        <input id="m_image_url" class="form-control" value="${esc(d.image_url)}"></div></div>
+      <div class="col-md-4"><div class="form-group"><label>Order Index</label>
+        <input id="m_order_index" class="form-control" type="number" value="${d.order_index??0}"></div></div>
+    </div>`,
+
+  team: (d={}) => `
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Name <span class="text-danger">*</span></label>
+        <input id="m_name" class="form-control" value="${esc(d.name)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Position</label>
+        <input id="m_position" class="form-control" value="${esc(d.position)}"></div></div>
+    </div>
+    <div class="form-group"><label>Bio</label>
+      <textarea id="m_bio" class="form-control" rows="3">${esc(d.bio)}</textarea></div>
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Email</label>
+        <input id="m_email" class="form-control" value="${esc(d.email)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Phone</label>
+        <input id="m_phone" class="form-control" value="${esc(d.phone)}"></div></div>
+    </div>
+    <div class="row">
+      <div class="col-md-8"><div class="form-group"><label>Photo URL</label>
+        <input id="m_image_url" class="form-control" value="${esc(d.image_url)}"></div></div>
+      <div class="col-md-4"><div class="form-group"><label>Order Index</label>
+        <input id="m_order_index" class="form-control" type="number" value="${d.order_index??0}"></div></div>
+    </div>`,
+
+  testimonials: (d={}) => `
+    <div class="row">
+      <div class="col-md-6"><div class="form-group"><label>Name <span class="text-danger">*</span></label>
+        <input id="m_name" class="form-control" value="${esc(d.name)}"></div></div>
+      <div class="col-md-6"><div class="form-group"><label>Company</label>
+        <input id="m_company" class="form-control" value="${esc(d.company)}"></div></div>
+    </div>
+    <div class="form-group"><label>Message</label>
+      <textarea id="m_message" class="form-control" rows="3">${esc(d.message)}</textarea></div>
+    <div class="row">
+      <div class="col-md-4"><div class="form-group"><label>Rating (1–5)</label>
+        <input id="m_rating" class="form-control" type="number" min="1" max="5" value="${d.rating??5}"></div></div>
+      <div class="col-md-8"><div class="form-group"><label>Photo URL</label>
+        <input id="m_image_url" class="form-control" value="${esc(d.image_url)}"></div></div>
+    </div>`
+};
+
+function esc(v) { return v ? String(v).replace(/"/g, '&quot;') : ''; }
+
+function openAddModal(name) {
+  modalMode = 'add'; modalSection = name; modalEditId = null;
+  document.getElementById('modalTitle').textContent = 'Add ' + name.slice(0,-1);
+  document.getElementById('modalBody').innerHTML = modalForms[name]();
+  $('#crudModal').modal('show');
+}
+
+async function openEditModal(name, id) {
+  modalMode = 'edit'; modalSection = name; modalEditId = id;
+  document.getElementById('modalTitle').textContent = 'Edit ' + name.slice(0,-1);
+  try {
+    const { data: list } = await api.get(`/admin/${name}`);
+    const item = list.find(r => r.id === id) || {};
+    document.getElementById('modalBody').innerHTML = modalForms[name](item);
+    $('#crudModal').modal('show');
+  } catch(e) {
+    toast('Could not load item: ' + e.message, 'error');
+  }
+}
+
+function getModalBody(name) {
+  if (name === 'services') {
+    const t = document.getElementById('m_title')?.value.trim();
+    if (!t) { toast('Title is required', 'error'); return null; }
+    return { title: t, description: document.getElementById('m_description')?.value, icon_url: document.getElementById('m_icon_url')?.value, image_url: document.getElementById('m_image_url')?.value, order_index: parseInt(document.getElementById('m_order_index')?.value)||0 };
+  }
+  if (name === 'portfolio') {
+    const t = document.getElementById('m_title')?.value.trim();
+    if (!t) { toast('Title is required', 'error'); return null; }
+    return { title: t, description: document.getElementById('m_description')?.value, image_url: document.getElementById('m_image_url')?.value, category: document.getElementById('m_category')?.value, order_index: parseInt(document.getElementById('m_order_index')?.value)||0 };
+  }
+  if (name === 'team') {
+    const t = document.getElementById('m_name')?.value.trim();
+    if (!t) { toast('Name is required', 'error'); return null; }
+    return { name: t, position: document.getElementById('m_position')?.value, bio: document.getElementById('m_bio')?.value, image_url: document.getElementById('m_image_url')?.value, email: document.getElementById('m_email')?.value, phone: document.getElementById('m_phone')?.value, order_index: parseInt(document.getElementById('m_order_index')?.value)||0 };
+  }
+  if (name === 'testimonials') {
+    const t = document.getElementById('m_name')?.value.trim();
+    if (!t) { toast('Name is required', 'error'); return null; }
+    return { name: t, company: document.getElementById('m_company')?.value, message: document.getElementById('m_message')?.value, rating: parseInt(document.getElementById('m_rating')?.value)||5, image_url: document.getElementById('m_image_url')?.value };
+  }
+}
+
+async function modalSave() {
+  const body = getModalBody(modalSection);
+  if (!body) return;
+  try {
+    if (modalMode === 'add') {
+      await api.post(`/admin/${modalSection}`, body);
+      toast('Added successfully!');
+    } else {
+      await api.put(`/admin/${modalSection}/${modalEditId}`, body);
+      toast('Updated successfully!');
+    }
+    $('#crudModal').modal('hide');
+    loadList(modalSection);
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+async function deleteItem(name, id) {
+  if (!confirm('Delete this item? This cannot be undone.')) return;
+  try {
+    await api.delete(`/admin/${name}/${id}`);
+    toast('Deleted.');
+    loadList(name);
+  } catch(e) {
+    toast('Delete failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  window.location.href = '/admin/login.html';
+}
+
+// ─── Hero Project ─────────────────────────────────────────────────────────────
+async function loadHeroProject() {
+  try {
+    const { data } = await api.get('/admin/hero-project');
+    const d = data || {};
+    document.getElementById('hp-title').value       = d.title           || '';
+    document.getElementById('hp-description').value = d.description     || '';
+    document.getElementById('hp-image-left').value  = d.image_url_left  || '';
+    document.getElementById('hp-image-right').value = d.image_url_right || '';
+    updateHpPreview('left',  d.image_url_left  || '');
+    updateHpPreview('right', d.image_url_right || '');
+  } catch(e) {
+    toast('Failed to load Hero Project: ' + e.message, 'error');
+  }
+}
+
+function updateHpPreview(side, url) {
+  const el = document.getElementById('hp-preview-' + side);
+  if (url) { el.src = url; el.style.display = 'block'; }
+  else      { el.src = '';  el.style.display = 'none';  }
+}
+
+async function saveHeroProject() {
+  const body = {
+    title:           document.getElementById('hp-title').value.trim(),
+    description:     document.getElementById('hp-description').value.trim(),
+    image_url_left:  document.getElementById('hp-image-left').value.trim(),
+    image_url_right: document.getElementById('hp-image-right').value.trim(),
+  };
+  try {
+    await api.post('/admin/hero-project', body);
+    toast('Hero Project saved!');
+    loadHeroProject();
+  } catch(e) {
+    toast('Save failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+// ─── Contact inbox ────────────────────────────────────────────────────────────
+async function loadContactList() {
+  try {
+    const { data } = await api.get('/admin/contact');
+    const tbody = document.getElementById('contact-tbody');
+    const badge = document.getElementById('contact-count');
+    badge.textContent = data.length ? `${data.length} messages` : '';
+
+    if (!data.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-envelope-open"></i>No submissions yet</div></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = data.map((r, i) => {
+      const date = new Date(r.created_at).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+      const preview = (r.message || '—').substring(0, 60) + ((r.message||'').length > 60 ? '…' : '');
+      return `<tr style="cursor:pointer" onclick="openContactDetail(${r.id})">
+        <td>${i+1}</td>
+        <td><strong>${esc(r.first_name)} ${esc(r.last_name||'')}</strong></td>
+        <td>${esc(r.email)}</td>
+        <td><small>${esc(preview)}</small></td>
+        <td><small class="text-muted">${date}</small></td>
+        <td><button class="btn btn-xs btn-danger" onclick="event.stopPropagation();deleteContact(${r.id})"><i class="fas fa-trash"></i></button></td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    toast('Failed to load contact submissions: ' + e.message, 'error');
+  }
+}
+
+let _contactItems = [];
+
+async function openContactDetail(id) {
+  try {
+    const { data } = await api.get('/admin/contact');
+    _contactItems = data;
+    const r = data.find(x => x.id === id);
+    if (!r) return;
+    const date = new Date(r.created_at).toLocaleString('en-GB');
+    document.getElementById('contactModalBody').innerHTML = `
+      <dl class="row mb-0">
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">${esc(r.first_name)} ${esc(r.last_name||'')}</dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9"><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></dd>
+        <dt class="col-sm-3">Date</dt>
+        <dd class="col-sm-9">${date}</dd>
+        <dt class="col-sm-3">Message</dt>
+        <dd class="col-sm-9" style="white-space:pre-wrap">${esc(r.message||'—')}</dd>
+      </dl>`;
+    document.getElementById('contactDeleteBtn').onclick = () => deleteContact(id, true);
+    $('#contactModal').modal('show');
+  } catch(e) {
+    toast('Could not open message: ' + e.message, 'error');
+  }
+}
+
+async function deleteContact(id, fromModal = false) {
+  if (!confirm('Delete this submission? This cannot be undone.')) return;
+  try {
+    await api.delete(`/admin/contact/${id}`);
+    toast('Submission deleted.');
+    if (fromModal) $('#contactModal').modal('hide');
+    loadContactList();
+  } catch(e) {
+    toast('Delete failed: ' + (e.response?.data?.error || e.message), 'error');
+  }
+}
+
+// ─── Load components then init ────────────────────────────────────────────────
+const COMPONENTS = [
+  'header','hero','ticker','about','services','hero-project',
+  'portfolio','team','testimonials','banner','footer','contact'
+];
+
+async function loadComponents() {
+  const container = document.getElementById('sections-container');
+  const htmlParts = await Promise.all(
+    COMPONENTS.map(name =>
+      fetch(`/admin/components/section-${name}.html`).then(r => r.text())
+    )
+  );
+  container.innerHTML = htmlParts.join('\n');
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadComponents();
+
+  const hash = window.location.hash.replace('#', '');
+  showSection(VALID_SECTIONS.includes(hash) ? hash : 'header');
+
+  // Hero Project live image previews
+  document.getElementById('hp-image-left').addEventListener('input',  e => updateHpPreview('left',  e.target.value.trim()));
+  document.getElementById('hp-image-right').addEventListener('input', e => updateHpPreview('right', e.target.value.trim()));
+});
+</script>
+</body>
+</html>

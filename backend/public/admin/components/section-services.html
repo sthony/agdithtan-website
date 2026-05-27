@@ -1,0 +1,47 @@
+<div id="section-services" class="section">
+  <!-- Section title + description -->
+  <div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">Section Heading</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Section Title <span class="text-danger">*</span></label>
+            <input type="text" id="svc_section_title" class="form-control" placeholder="Our Services">
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="form-group">
+            <label>Section Description</label>
+            <input type="text" id="svc_section_desc" class="form-control" placeholder="What we offer to help your business grow">
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="saveServicesSection()">
+        <i class="fas fa-save"></i> Save Heading
+      </button>
+    </div>
+  </div>
+
+  <!-- Services list table -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="card-title">Services List</h3>
+      <button class="btn btn-success btn-sm" onclick="openAddModal('services')">
+        <i class="fas fa-plus"></i> Add Service
+      </button>
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr><th>#</th><th>Title</th><th>Description</th><th>Icon</th><th>Order</th><th style="width:120px">Actions</th></tr>
+        </thead>
+        <tbody id="services-tbody">
+          <tr><td colspan="6"><div class="empty-state"><i class="fas fa-cogs"></i>No services yet</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

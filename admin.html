@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agdith Admin - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/AdminLTE/3.2.0/css/adminlte.min.css">
+    <style>
+        .brand-link {
+            background: linear-gradient(135deg, #8B7355 0%, #6b5547 100%);
+        }
+        .main-sidebar {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d7c3 100%);
+        }
+        .nav-sidebar .nav-link.active {
+            background-color: #8B7355;
+            color: white;
+        }
+        .content-header {
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d7c3 100%);
+        }
+        .btn-primary {
+            background-color: #8B7355;
+            border-color: #8B7355;
+        }
+        .btn-primary:hover {
+            background-color: #6b5547;
+            border-color: #6b5547;
+        }
+        .form-control:focus {
+            border-color: #8B7355;
+            box-shadow: 0 0 0 0.2rem rgba(139, 115, 85, 0.25);
+        }
+        .card-header.bg-primary {
+            background-color: #8B7355 !important;
+        }
+        .alert-success {
+            display: none;
+        }
+        .hidden-section {
+            display: none;
+        }
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        table {
+            font-size: 0.9rem;
+        }
+        .img-thumbnail {
+            max-width: 100px;
+            height: auto;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #8B7355 0%, #6b5547 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="hold-transition layout-top-nav layout-navbar-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+            <div class="container-fluid">
+                <a href="/" class="navbar-brand">
+                    <span class="brand-text font-weight-light">Agdith Admin</span>
+                </a>
+                <button class="order-1 order-md-3 navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="order-3 order-md-2 navbar-nav navbar-no-expand ml-auto" id="navbar-menu">
+                    <div class="nav-item">
+                        <a class="nav-link" href="/" target="_blank"><i class="fas fa-globe"></i> View Site</a>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                            <i class="fas fa-user"></i> <span id="user-email">Admin</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                            <a href="#" class="dropdown-item" onclick="logout()">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0" id="page-title">Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Alert Messages -->
+                    <div class="alert alert-success alert-dismissible fade show" id="success-alert" role="alert">
+                        <i class="fas fa-check mr-2"></i><span id="success-message"></span>
+                        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                    </div>
+                    <div class="alert alert-danger alert-dismissible fade show" id="error-alert" style="display:none;" role="alert">
+                        <i class="fas fa-exclamation mr-2"></i><span id="error-message"></span>
+                        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                    </div>
+
+                    <!-- Dashboard -->
+                    <div id="dashboard" class="dashboard-section">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-info"><i class="fas fa-envelope"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Contact Messages</span>
+                                        <span class="info-box-number" id="message-count">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-success"><i class="fas fa-briefcase"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Projects</span>
+                                        <span class="info-box-number" id="project-count">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-warning"><i class="fas fa-cog"></i></span>
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Sections</span>
+                                        <span class="info-box-number" id="section-count">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title">Quick Actions</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <button class="btn btn-primary btn-block" onclick="navigateTo('settings')">
+                                            <i class="fas fa-sliders-h mr-2"></i> Website Settings
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <button class="btn btn-primary btn-block" onclick="navigateTo('sections')">
+                                            <i class="fas fa-file-alt mr-2"></i> Manage Sections
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <button class="btn btn-primary btn-block" onclick="navigateTo('projects')">
+                                            <i class="fas fa-images mr-2"></i> Manage Projects
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <button class="btn btn-primary btn-block" onclick="navigateTo('contact')">
+                                            <i class="fas fa-envelope mr-2"></i> Contact Messages
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div id="settings-section" class="hidden-section">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title">Website Settings</h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="settings-form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Company Name</label>
+                                                <input type="text" class="form-control" id="setting-company_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Company Email</label>
+                                                <input type="email" class="form-control" id="setting-company_email" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Company Phone</label>
+                                                <input type="tel" class="form-control" id="setting-company_phone">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Company Logo URL</label>
+                                                <input type="url" class="form-control" id="setting-company_logo">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Hero Title</label>
+                                                <input type="text" class="form-control" id="setting-hero_title">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Hero Subtitle</label>
+                                                <input type="text" class="form-control" id="setting-hero_subtitle">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Footer Text</label>
+                                                <input type="text" class="form-control" id="setting-footer_text">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Footer Address</label>
+                                                <input type="text" class="form-control" id="setting-footer_address">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Facebook URL</label>
+                                                <input type="url" class="form-control" id="setting-social_facebook">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Instagram URL</label>
+                                                <input type="url" class="form-control" id="setting-social_instagram">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>LinkedIn URL</label>
+                                                <input type="url" class="form-control" id="setting-social_linkedin">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-2"></i> Save Settings</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sections Management -->
+                    <div id="sections-section" class="hidden-section">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title">Manage Sections</h3>
+                                <div class="card-tools">
+                                    <button class="btn btn-light btn-sm" onclick="showSectionModal()"><i class="fas fa-plus mr-2"></i> Add Section</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="loader" id="sections-loader">Loading sections...</div>
+                                <table class="table table-striped" id="sections-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Slug</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="sections-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Management -->
+                    <div id="projects-section" class="hidden-section">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title">Manage Projects</h3>
+                                <div class="card-tools">
+                                    <button class="btn btn-light btn-sm" onclick="showProjectModal()"><i class="fas fa-plus mr-2"></i> Add Project</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="loader" id="projects-loader">Loading projects...</div>
+                                <table class="table table-striped" id="projects-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Title</th>
+                                            <th>Category</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="projects-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Messages -->
+                    <div id="contact-section" class="hidden-section">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <h3 class="card-title">Contact Messages</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="loader" id="contact-loader">Loading messages...</div>
+                                <table class="table table-striped" id="contact-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="contact-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Modal -->
+    <div class="modal fade" id="sectionModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add/Edit Section</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <form id="section-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="section-id">
+                        <div class="form-group">
+                            <label>Title *</label>
+                            <input type="text" class="form-control" id="section-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Slug *</label>
+                            <input type="text" class="form-control" id="section-slug" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Subtitle</label>
+                            <input type="text" class="form-control" id="section-subtitle">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" id="section-description" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Image</label>
+                            <input type="file" class="form-control-file" id="section-image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Section</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div class="modal fade" id="projectModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add/Edit Project</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                </div>
+                <form id="project-form">
+                    <div class="modal-body">
+                        <input type="hidden" id="project-id">
+                        <div class="form-group">
+                            <label>Title *</label>
+                            <input type="text" class="form-control" id="project-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" id="project-description" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" class="form-control" id="project-category">
+                        </div>
+                        <div class="form-group">
+                            <label>Image</label>
+                            <input type="file" class="form-control-file" id="project-image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/AdminLTE/3.2.0/js/adminlte.min.js"></script>
+    <script type="module">
+        import api from './src/api.js';
+
+        // Global state
+        let currentUser = null;
+
+        // Check auth on load
+        function checkAuth() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                showLoginForm();
+            } else {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                currentUser = user;
+                document.getElementById('user-email').textContent = user.email;
+                loadDashboard();
+            }
+        }
+
+        // Show login form
+        function showLoginForm() {
+            document.body.innerHTML = `
+                <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f5e6d3 0%, #e8d7c3 100%);">
+                    <div class="card" style="width: 100%; max-width: 400px;">
+                        <div class="card-header" style="background: linear-gradient(135deg, #8B7355 0%, #6b5547 100%); color: white;">
+                            <h3 class="card-title mb-0">Agdith Admin Login</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="login-form">
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" id="login-email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" id="login-password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                <div id="login-error" style="color: red; margin-top: 10px; display: none;"></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+
+                try {
+                    const response = await api.post('/auth/login', { email, password });
+                    localStorage.setItem('auth_token', response.data.token);
+                    localStorage.setItem('user', JSON.stringify(response.data.user));
+                    window.location.reload();
+                } catch (error) {
+                    document.getElementById('login-error').textContent = error.response?.data?.error || 'Login failed';
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            });
+        }
+
+        // Logout
+        window.logout = function() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user');
+            window.location.reload();
+        };
+
+        // Navigate between sections
+        window.navigateTo = function(section) {
+            document.querySelectorAll('.hidden-section').forEach(el => el.classList.add('hidden-section'));
+            document.getElementById('dashboard').classList.add('hidden-section');
+
+            if (section === 'dashboard') {
+                document.getElementById('dashboard').classList.remove('hidden-section');
+                document.getElementById('page-title').textContent = 'Dashboard';
+            } else if (section === 'settings') {
+                document.getElementById('settings-section').classList.remove('hidden-section');
+                document.getElementById('page-title').textContent = 'Website Settings';
+                loadSettings();
+            } else if (section === 'sections') {
+                document.getElementById('sections-section').classList.remove('hidden-section');
+                document.getElementById('page-title').textContent = 'Manage Sections';
+                loadSectionsTable();
+            } else if (section === 'projects') {
+                document.getElementById('projects-section').classList.remove('hidden-section');
+                document.getElementById('page-title').textContent = 'Manage Projects';
+                loadProjectsTable();
+            } else if (section === 'contact') {
+                document.getElementById('contact-section').classList.remove('hidden-section');
+                document.getElementById('page-title').textContent = 'Contact Messages';
+                loadContactTable();
+            }
+        };
+
+        // Load dashboard
+        async function loadDashboard() {
+            try {
+                const [contacts, projects, sections] = await Promise.all([
+                    api.get('/contact').catch(() => ({ data: [] })),
+                    api.get('/projects'),
+                    api.get('/sections')
+                ]);
+
+                document.getElementById('message-count').textContent = contacts.data?.length || 0;
+                document.getElementById('project-count').textContent = projects.data.length;
+                document.getElementById('section-count').textContent = sections.data.length;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+            navigateTo('dashboard');
+        }
+
+        // Load settings
+        async function loadSettings() {
+            try {
+                const response = await api.get('/settings');
+                const settings = response.data;
+
+                Object.keys(settings).forEach(key => {
+                    const input = document.getElementById(`setting-${key}`);
+                    if (input) input.value = settings[key] || '';
+                });
+
+                document.getElementById('settings-form').onsubmit = async (e) => {
+                    e.preventDefault();
+                    const updates = {};
+                    document.querySelectorAll('[id^="setting-"]').forEach(input => {
+                        const key = input.id.replace('setting-', '');
+                        updates[key] = input.value;
+                    });
+
+                    for (const [key, value] of Object.entries(updates)) {
+                        try {
+                            await api.put(`/settings/${key}`, { value });
+                        } catch (error) {
+                            console.error(`Error updating ${key}:`, error);
+                        }
+                    }
+                    showSuccessMessage('Settings saved successfully!');
+                };
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        // Load sections table
+        async function loadSectionsTable() {
+            document.getElementById('sections-loader').style.display = 'block';
+            try {
+                const response = await api.get('/sections');
+                const tbody = document.getElementById('sections-tbody');
+                tbody.innerHTML = '';
+
+                response.data.forEach(section => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${section.title}</td>
+                            <td>${section.slug}</td>
+                            <td><span class="badge ${section.is_active ? 'badge-success' : 'badge-danger'}">${section.is_active ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="editSection(${section.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteSection(${section.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading sections:', error);
+            } finally {
+                document.getElementById('sections-loader').style.display = 'none';
+            }
+        }
+
+        // Load projects table
+        async function loadProjectsTable() {
+            document.getElementById('projects-loader').style.display = 'block';
+            try {
+                const response = await api.get('/projects');
+                const tbody = document.getElementById('projects-tbody');
+                tbody.innerHTML = '';
+
+                response.data.forEach(project => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${project.image_url ? `<img src="${project.image_url}" class="img-thumbnail">` : 'No image'}</td>
+                            <td>${project.title}</td>
+                            <td>${project.category || '-'}</td>
+                            <td><span class="badge ${project.is_active ? 'badge-success' : 'badge-danger'}">${project.is_active ? 'Active' : 'Inactive'}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="editProject(${project.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteProject(${project.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            } finally {
+                document.getElementById('projects-loader').style.display = 'none';
+            }
+        }
+
+        // Load contact table
+        async function loadContactTable() {
+            document.getElementById('contact-loader').style.display = 'block';
+            try {
+                const response = await api.get('/contact');
+                const tbody = document.getElementById('contact-tbody');
+                tbody.innerHTML = '';
+
+                response.data.forEach(contact => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${contact.name}</td>
+                            <td>${contact.email}</td>
+                            <td>${contact.subject || '-'}</td>
+                            <td><span class="badge badge-${contact.status === 'unread' ? 'danger' : 'success'}">${contact.status}</span></td>
+                            <td>${new Date(contact.created_at).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" onclick="viewContact(${contact.id})"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteContact(${contact.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading contacts:', error);
+            } finally {
+                document.getElementById('contact-loader').style.display = 'none';
+            }
+        }
+
+        // Show/hide modals and success messages
+        window.showSectionModal = function() {
+            document.getElementById('section-id').value = '';
+            document.getElementById('section-form').reset();
+            $('#sectionModal').modal('show');
+        };
+
+        window.showProjectModal = function() {
+            document.getElementById('project-id').value = '';
+            document.getElementById('project-form').reset();
+            $('#projectModal').modal('show');
+        };
+
+        window.showSuccessMessage = function(message) {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-alert').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('success-alert').style.display = 'none';
+            }, 3000);
+        };
+
+        // Delete functions
+        window.deleteSection = async function(id) {
+            if (confirm('Are you sure?')) {
+                try {
+                    await api.delete(`/sections/${id}`);
+                    showSuccessMessage('Section deleted successfully!');
+                    loadSectionsTable();
+                } catch (error) {
+                    alert('Error deleting section');
+                }
+            }
+        };
+
+        window.deleteProject = async function(id) {
+            if (confirm('Are you sure?')) {
+                try {
+                    await api.delete(`/projects/${id}`);
+                    showSuccessMessage('Project deleted successfully!');
+                    loadProjectsTable();
+                } catch (error) {
+                    alert('Error deleting project');
+                }
+            }
+        };
+
+        window.deleteContact = async function(id) {
+            if (confirm('Are you sure?')) {
+                try {
+                    await api.delete(`/contact/${id}`);
+                    showSuccessMessage('Message deleted successfully!');
+                    loadContactTable();
+                } catch (error) {
+                    alert('Error deleting message');
+                }
+            }
+        };
+
+        // Form submissions
+        document.getElementById('section-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Implementation for section form
+        });
+
+        document.getElementById('project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Implementation for project form
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>

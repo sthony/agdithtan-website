@@ -1,0 +1,51 @@
+<div id="section-hero" class="section">
+  <div class="card card-primary">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="card-title">Hero / Banner Section</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Title <span class="text-danger">*</span></label>
+            <input type="text" id="hero_title" class="form-control">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Subtitle</label>
+            <input type="text" id="hero_subtitle" class="form-control">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="hero_description" class="form-control" rows="3"></textarea>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>CTA Button Text</label>
+            <input type="text" id="hero_cta_text" class="form-control" placeholder="Get Started">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>CTA Button Link</label>
+            <input type="text" id="hero_cta_link" class="form-control" placeholder="#contact">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Background Image URL</label>
+            <input type="text" id="hero_bg" class="form-control" placeholder="https://...">
+          </div>
+        </div>
+      </div>
+      <button onclick="saveSingle('hero')" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
+      <button class="btn btn-danger" onclick="deleteSingle('hero')">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>
